@@ -11,5 +11,16 @@ Route::get('/', function () {
 Route::get('/reset-password/{token}', function ($token) {
     $email = request()->query('email', '');
     $frontend = config('app.frontend_url', 'http://localhost:5173');
-    return redirect("{$frontend}/reset-password?token={$token}&email={$email}");
+    
+    \Illuminate\Support\Facades\Log::info("Password reset link clicked", [
+        'email' => $email,
+        'token_preview' => substr($token, 0, 8) . '...'
+    ]);
+
+    $query = http_build_query([
+        'token' => $token,
+        'email' => $email
+    ]);
+
+    return redirect("{$frontend}/reset-password?{$query}");
 })->name('password.reset');
