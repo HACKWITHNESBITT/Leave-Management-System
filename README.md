@@ -68,3 +68,7 @@ npm run dev
 2. Register an account with `admin` role and another with `user` role.
 3. Test leave creation as a user.
 4. Test leave approval as an admin.
+
+## LIVE DEMO :
+
+    https://leave-management-system-wine.vercel.app/
