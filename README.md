@@ -71,4 +71,4 @@ npm run dev
 
 ## LIVE DEMO :
 
-    https://leave-management-system-wine.vercel.app/
+https://leave-management-system-wine.vercel.app/
