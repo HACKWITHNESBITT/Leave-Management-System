@@ -22,9 +22,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip exif
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
-
-# Copy backend code
-COPY . .
+COPY backend/ .
 
 # Composer install
 RUN composer install --no-dev --optimize-autoloader --no-scripts
