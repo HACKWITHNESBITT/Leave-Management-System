@@ -30,6 +30,7 @@ cd backend
 If running locally with XAMPP / local MySQL:
 ```bash
 cd backend
+composer install
 php artisan migrate
 php artisan serve
 ```
