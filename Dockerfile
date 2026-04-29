@@ -1,16 +1,42 @@
-FROM richarvey/nginx-php-fpm:latest
+FROM php:8.3-fpm
 
-# Copy backend code into the container
-COPY . /var/www/html
+# System dependencies
+RUN apt-get update &amp;&amp; apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    nginx \
+    supervisor \
+    &amp;&amp; apt-get clean \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
 
-# Set Laravel's public directory as the web root
-ENV WEBROOT /var/www/html/public
-ENV APP_ENV production
+# PHP Extensions for Laravel
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip exif
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set permissions for Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+WORKDIR /var/www/html
 
-CMD ["/start.sh"]
+# Copy backend code
+COPY . .
+
+# Composer install
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Permissions
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    &amp;&amp; chmod -R 775 storage bootstrap/cache
+
+# Configs
+COPY nginx.conf /etc/nginx/sites-available/default
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 80
+
+CMD ["/usr/bin/supervisord"]
