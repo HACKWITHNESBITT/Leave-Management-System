@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: leave-management-backend
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: backend/Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromDatabase:
+          name: leave-db
+          property: host
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: leave_management
+      - key: DB_USERNAME
+        fromDatabase:
+          name: leave-db
+          property: username
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: leave-db
+          property: password
+  - type: mysql
+    name: leave-db
+    plan: free
+    region: oregon
+    databaseName: leave_management
+    username: render_user
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
