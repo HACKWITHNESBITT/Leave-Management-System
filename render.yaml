@@ -14,3 +14,13 @@ services:
         value: sqlite
       - key: DB_DATABASE
         value: /var/www/html/database/database.sqlite
+
+  - type: static
+    name: leave-management-frontend
+    region: oregon
+    plan: free
+    staticPublishPath: frontend/dist
+    buildCommand: cd frontend && npm ci && npm run build
+    envVars:
+      - key: NODE_ENV
+        value: production
